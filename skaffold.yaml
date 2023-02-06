@@ -1,0 +1,28 @@
+# https://skaffold.dev/docs/references/yaml/
+---
+apiVersion: skaffold/v2beta26
+kind: Config
+metadata:
+  name: privatepages-api
+build:
+  artifacts:
+  - image: privatepages-api
+    ko:
+      fromImage: alpine # golang:1.19-alpine
+      dir: src/cmd/app
+      dependencies:
+        paths:
+        - "src/*"
+        - "skaffold/*"
+        - "skaffold.yaml"
+        ignore: []
+deploy:
+  kubectl:
+    manifests:
+      - skaffold/app.yaml
+portForward:
+  - resourceType: service
+    resourceName: privatepages-api
+    port: 80
+    address: 127.0.0.1
+    localPort: 8080

@@ -1,0 +1,3 @@
+src/main
+tmp
+skaffold/secrets.yaml

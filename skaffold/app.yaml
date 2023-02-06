@@ -1,0 +1,65 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: privatepages-api
+spec:
+  type: ClusterIP
+  selector:
+    app: privatepages-api
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: privatepages-api
+spec:
+  selector:
+    matchLabels:
+      app: privatepages-api
+  template:
+    metadata:
+      labels:
+        app: privatepages-api
+    spec:
+      containers:
+        - name: app
+          image: privatepages-api
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - name: main
+              containerPort: 80
+          env:
+            - name: LOG_LEVEL
+              value: info
+            - name: HTTP_LISTEN
+              value: ":80"
+            - name: API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: privatepages-api
+                  key: API_SECRET
+
+# ---
+# apiVersion: monitoring.coreos.com/v1
+# kind: PodMonitor
+# metadata:
+#   name: privatepages-api
+#   labels:
+#     release: prometheus # release name of prom-stack chart
+# spec:
+#   selector:
+#     matchLabels:
+#       app: privatepages-api
+#   podMetricsEndpoints:
+#     - port: main
+#       interval: 30s
+#       path: /metrics
+#       targetPort: 80
