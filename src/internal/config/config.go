@@ -11,9 +11,10 @@ import (
 type Config struct {
 	Loglevel         string `env:"LOG_LEVEL"     env-default:"error"`
 	HTTPListenIPPort string `env:"HTTP_LISTEN"   env-default:":80"`
-	API_SECRET       string `env:"API_SECRET"` // stored in secret
+	APISecret        string `env:"API_SECRET"` // stored in secret
 }
 
+// Cfg contains pointer to config object
 var Cfg *Config
 
 func init() {

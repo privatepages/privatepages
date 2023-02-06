@@ -14,12 +14,14 @@ func init() {
 	conf = config.Cfg
 }
 
+// Upload method for uploading files
 func Upload(c *gin.Context) {
 
 	// get the vars off req body
 	var body struct {
-		Token        string
-		Artifactname string
+		File         http.File
+		Token        string `form:"token" binding:"required"`
+		Artifactname string `form:"artifactname" binding:"required"`
 	}
 
 	if c.Bind(&body) != nil {
@@ -30,15 +32,14 @@ func Upload(c *gin.Context) {
 	}
 
 	// auth
-
-	if body.Token == conf.API_SECRET { // try bcrypt on browser
+	if body.Token != conf.APISecret { // try bcrypt on browser
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Incorrect token",
 		})
 		return
 	}
 
-	// validate artifactname
+	// validate artifactname [a-z0-9_-]+
 
 	// // body.Artifactname
 	// if err != nil {
@@ -57,5 +58,8 @@ func Upload(c *gin.Context) {
 	// unarchive
 
 	// Respond
-	c.JSON(http.StatusOK, gin.H{})
+	c.JSON(http.StatusOK, gin.H{
+		"status": "Artifact has been uploaded",
+		"name":   body.Artifactname,
+	})
 }

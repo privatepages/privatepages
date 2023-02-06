@@ -20,10 +20,21 @@
 ### Local (linux)
 
     cd ./src
-    export API_SECRET=test
+    go mod tidy
+    export API_SECRET=secret
     export HTTP_LISTEN=:8080
     export LOG_LEVEL=debug
     go run cmd/app/main.go
+
+
+## Upload testing
+
+Try use upload-test.html
+
+OR
+
+    curl 127.0.0.1:8080/upload -F 'file=@/path/to/local/file.txt' -F 'artifactname=my-folder-name' -F 'token=secret'
+
 
 ## To Do
 

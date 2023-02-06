@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"golang.org/x/sync/errgroup"
@@ -25,6 +26,7 @@ func init() {
 	conf = config.Cfg
 }
 
+// Run like main func
 func Run() {
 
 	log.Info("Starting app")
@@ -33,9 +35,20 @@ func Run() {
 
 	r := gin.New()
 
+	r.Use(cors.New(cors.Config{
+		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return true
+		},
+		MaxAge: 12 * time.Hour,
+	}))
+
 	r.Use(gin.LoggerWithConfig(gin.LoggerConfig{SkipPaths: []string{"/metrics"}}))
 
-	r.GET("/upload", controllers.Upload)
+	r.POST("/upload", controllers.Upload)
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 	r.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
