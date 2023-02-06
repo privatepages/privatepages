@@ -3,7 +3,7 @@
 
 ## Develop
 
-### In minikube (linux)
+### In minikube with skaffold (linux)
 
     minikube start
     eval $(minikube docker-env)
@@ -16,6 +16,14 @@
     # and edit secrets
     kubectl apply -n privatepages-api -f skaffold/secrets.yaml
     skaffold dev
+
+### Local (linux)
+
+    cd ./src
+    export API_SECRET=test
+    export HTTP_LISTEN=:8080
+    export LOG_LEVEL=debug
+    go run cmd/app/main.go
 
 ## To Do
 
