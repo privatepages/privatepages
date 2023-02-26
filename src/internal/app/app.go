@@ -55,6 +55,16 @@ func Run() {
 			"status": "ok",
 		})
 	})
+	r.GET("/liveness", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "ok",
+		})
+	})
+	r.GET("/readiness", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "ok",
+		})
+	})
 
 	server := &http.Server{
 		Addr:    conf.HTTPListenIPPort,
