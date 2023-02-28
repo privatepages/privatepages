@@ -76,3 +76,5 @@ OR
 * swagger
 * extensive readme documents in each repo
 * chart "how to" with any solutions like cert-manager, nginx-ingress, etc.
+* redis
+* /oauth2/sign_out fix redirects
