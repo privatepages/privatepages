@@ -9,9 +9,12 @@ import (
 
 // Config is a structure containing configuration fields for this application.
 type Config struct {
-	Loglevel         string `env:"LOG_LEVEL"     env-default:"error"`
-	HTTPListenIPPort string `env:"HTTP_LISTEN"   env-default:":80"`
-	APISecret        string `env:"API_SECRET"` // stored in secret
+	Loglevel            string `env:"LOG_LEVEL"              env-default:"error"`
+	HTTPListenIPPort    string `env:"HTTP_LISTEN"            env-default:":80"`
+	HTTPUploadMaxSize   int    `env:"HTTP_UPLOAD_MAX_SIZE"   env-default:"10"`
+	APISecret           string `env:"API_SECRET"` // stored in secret
+	ArtifactStoragePath string `env:"ARTIFACT_STORAGE_PATH"  env-default:"/data"`
+	CheckIndexPage      bool   `env:"CHECK_INDEX_PAGE"       env-default:"true"`
 }
 
 // Cfg contains pointer to config object

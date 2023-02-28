@@ -1,6 +1,6 @@
 ---
 
-name: Audit
+name: Code checks
 
 on:
   push:

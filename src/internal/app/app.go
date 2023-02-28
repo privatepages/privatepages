@@ -16,11 +16,13 @@ import (
 
 	"package/main/internal/config"
 	"package/main/internal/controllers"
+	"package/main/internal/logger"
 )
 
 var ctx, cancel = context.WithCancel(context.Background())
 var group, groupCtx = errgroup.WithContext(ctx)
 var conf *config.Config
+var log = logger.Log
 
 func init() {
 	conf = config.Cfg
@@ -48,7 +50,9 @@ func Run() {
 
 	r.Use(gin.LoggerWithConfig(gin.LoggerConfig{SkipPaths: []string{"/metrics"}}))
 
+	r.MaxMultipartMemory = int64(conf.HTTPUploadMaxSize) << 20
 	r.POST("/upload", controllers.Upload)
+	r.POST("/remove", controllers.Remove)
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 	r.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{

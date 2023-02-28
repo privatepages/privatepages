@@ -26,21 +26,52 @@ spec:
       labels:
         app: privatepages-api
     spec:
+      volumes:
+        - name: config
+          configMap:
+            name: privatepages
+        - name: data
+          persistentVolumeClaim:
+            claimName: privatepages-data
       containers:
+        - name: nginx
+          image: "nginx:1.23"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+            - name: data
+              mountPath: /var/www/html
         - name: app
           image: privatepages-api
+          volumeMounts:
+            - name: data
+              mountPath: /data
           resources:
             limits:
               memory: "128Mi"
               cpu: "500m"
           ports:
-            - name: main
-              containerPort: 80
+            - name: privatepages
+              containerPort: 8080
+              protocol: TCP
           env:
             - name: LOG_LEVEL
               value: info
             - name: HTTP_LISTEN
-              value: ":80"
+              value: ":8080"
+            - name: HTTP_UPLOAD_MAX_SIZE
+              value: "100"
+            - name: ARTIFACT_STORAGE_PATH
+              value: "/data"
             - name: API_SECRET
               valueFrom:
                 secretKeyRef:
